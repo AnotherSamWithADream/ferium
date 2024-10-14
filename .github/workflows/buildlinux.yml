@@ -50,27 +50,46 @@ jobs:
         run: |
           cargo build --target=x86_64-unknown-linux-musl --release
           zip -r out/ferium-linux.zip -j target/x86_64-unknown-linux-musl/release/ferium
+      - name: Upload Linux build artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ferium-linux
+          path: out/ferium-linux.zip
+          if-no-files-found: error
+
       - name: Build ARM Linux
         run: |
           cargo rustc --target=aarch64-unknown-linux-musl --release -- -Clink-self-contained=yes -Clinker=rust-lld
           zip -r out/ferium-linux-arm64.zip -j target/aarch64-unknown-linux-musl/release/ferium
         env:
           CC_aarch64_unknown_linux_musl: clang-17
+      - name: Upload ARM Linux build artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ferium-linux-arm64
+          path: out/ferium-linux-arm64.zip
+          if-no-files-found: error
 
       - name: Build Linux nogui
         run: |
           cargo build --target=x86_64-unknown-linux-musl --release --no-default-features
           zip -r out/ferium-linux-nogui.zip -j target/x86_64-unknown-linux-musl/release/ferium
+      - name: Upload Linux nogui build artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ferium-linux-nogui
+          path: out/ferium-linux-nogui.zip
+          if-no-files-found: error
+
       - name: Build ARM Linux nogui
         run: |
           cargo rustc --target=aarch64-unknown-linux-musl --release --no-default-features -- -Clink-self-contained=yes -Clinker=rust-lld 
           zip -r out/ferium-linux-arm64-nogui.zip -j target/aarch64-unknown-linux-musl/release/ferium
         env:
           CC_aarch64_unknown_linux_musl: clang-17
-
-      - name: Upload build artefacts
+      - name: Upload ARM Linux nogui build artefact
         uses: actions/upload-artifact@v4
         with:
-          name: binaries-ubuntu-latest
-          path: out/ferium*.zip
+          name: ferium-linux-arm64-nogui
+          path: out/ferium-linux-arm64-nogui.zip
           if-no-files-found: error
